@@ -4,42 +4,90 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
+import static java.lang.Math.sqrt;
+
+/**
+ *
+ */
 public class CalculateRootsService extends IntentService {
 
+  private static final int MAXIMUM_TIME_TO_FIND_ROOTS = 20000;
 
+  /**
+   *
+   */
   public CalculateRootsService() {
     super("CalculateRootsService");
   }
 
   @Override
   protected void onHandleIntent(Intent intent) {
-    if (intent == null) return;
+    Intent intentResult = new Intent();
+    if (intent == null) {
+      return;
+    }
     long timeStartMs = System.currentTimeMillis();
     long numberToCalculateRootsFor = intent.getLongExtra("number_for_service", 0);
     if (numberToCalculateRootsFor <= 0) {
       Log.e("CalculateRootsService", "can't calculate roots for non-positive input" + numberToCalculateRootsFor);
       return;
     }
-    /*
-    TODO:
-     calculate the roots.
-     check the time (using `System.currentTimeMillis()`) and stop calculations if can't find an answer after 20 seconds
-     upon success (found a root, or found that the input number is prime):
-      send broadcast with action "found_roots" and with extras:
-       - "original_number"(long)
-       - "root1"(long)
-       - "root2"(long)
-     upon failure (giving up after 20 seconds without an answer):
-      send broadcast with action "stopped_calculations" and with extras:
-       - "original_number"(long)
-       - "time_until_give_up_seconds"(long) the time we tried calculating
+    RootResult result = findRoot(numberToCalculateRootsFor,timeStartMs);
+    if (result._isValidRootFound){
+      intentResult.setAction("found_roots");
+      intentResult.putExtra("original_number",numberToCalculateRootsFor);
+      intentResult.putExtra("root1",result._root1);
+      intentResult.putExtra("root2",result._root2);
+      intentResult.putExtra("calculationTime",result._calculationTime);
+    }
+    else{
+      intentResult.setAction("stopped_calculations");
+      intentResult.putExtra("original_number",numberToCalculateRootsFor);
+      intentResult.putExtra("time_until_give_up_seconds",result._calculationTime);
+    }
+    sendBroadcast(intentResult);
+  }
 
-      examples:
-       for input "33", roots are (3, 11)
-       for input "30", roots can be (3, 10) or (2, 15) or other options
-       for input "17", roots are (17, 1)
-       for input "829851628752296034247307144300617649465159", after 20 seconds give up
+  /**
+   *
+   * @param target
+   * @param timeStartMs
+   * @return
+   */
+  private static RootResult findRoot(long target, long timeStartMs) {
+    if (target == 0){
+      return RootResultFactory.createRootResultForTargetZero();
+    }
+    long root1 = 1, root2 = 1;
+    long sqrtOfTarget = (long)Math.ceil(sqrt(target));
 
-     */
+    while (root1 <= sqrtOfTarget){
+      while (root2 <= sqrtOfTarget){
+        if (System.currentTimeMillis() - timeStartMs > MAXIMUM_TIME_TO_FIND_ROOTS || root1*root2 == target){
+          break;
+        }
+        root2 += 1;
+      }
+      if (System.currentTimeMillis() - timeStartMs > MAXIMUM_TIME_TO_FIND_ROOTS || root1*root2 == target){
+        break;
+      }
+      root1 += 1;
+      root2 = root1;
+    }
+
+    long calculationTime = System.currentTimeMillis() - timeStartMs;
+    if(calculationTime > MAXIMUM_TIME_TO_FIND_ROOTS){
+      return RootResultFactory.createRootResultNotFound(calculationTime);
+    }
+    // Root Found
+    else if (root1 * root2 == target){
+      return RootResultFactory.createRootResultFound(root1,root2,calculationTime);
+    }
+    //Prime
+    else{
+      return RootResultFactory.createRootResultPrimeFound(target,calculationTime);
+    }
   }
 }
+
+

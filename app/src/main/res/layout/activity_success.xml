@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SuccessActivity">
+
+
+
+    <TextView
+        android:id="@+id/successActivityTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Success"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"
+        android:textSize="32sp"
+        android:textColor="@color/titleColor"
+        />
+
+    <TextView
+        android:id="@+id/originalNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintLeft_toLeftOf="@id/successActivityTitle"
+        app:layout_constraintTop_toBottomOf="@id/successActivityTitle"
+        android:layout_marginTop="40dp"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        />
+
+    <TextView
+        android:id="@+id/root1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintLeft_toLeftOf="@id/originalNumber"
+        app:layout_constraintTop_toBottomOf="@id/originalNumber"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        />
+
+    <TextView
+        android:id="@+id/root2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintLeft_toLeftOf="@id/root1"
+        app:layout_constraintTop_toBottomOf="@id/root1"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        />
+
+
+    <TextView
+        android:id="@+id/calculationTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text=""
+        app:layout_constraintLeft_toLeftOf="@id/root2"
+        app:layout_constraintTop_toBottomOf="@id/root2"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
